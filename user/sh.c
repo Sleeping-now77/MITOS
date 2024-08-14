@@ -76,7 +76,7 @@ runcmd(struct cmd *cmd)
     ecmd = (struct execcmd*)cmd;
     if(ecmd->argv[0] == 0)
       exit(1);
-    exec(ecmd->argv[0], ecmd->argv);
+    exec(ecmd->argv[0], ecmd->argv);  ////在一切都确认好了可以执行参数没有错误的情况下才调用了 exec
     fprintf(2, "exec %s failed\n", ecmd->argv[0]);
     break;
 

@@ -54,8 +54,8 @@ sys_sleep(void)
   int n;
   uint ticks0;
 
-  argint(0, &n);
-  acquire(&tickslock);
+  argint(0, &n);  //void  argint(int, int*);
+  acquire(&tickslock); //void acquire(struct spinlock*);
   ticks0 = ticks;
   while(ticks - ticks0 < n){
     if(killed(myproc())){

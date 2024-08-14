@@ -41,25 +41,32 @@ ls(char *path)
     return;
   }
 
+
   switch(st.type){
   case T_DEVICE:
   case T_FILE:
     printf("%s %d %d %l\n", fmtname(path), st.type, st.ino, st.size);
     break;
 
-  case T_DIR:
+  case T_DIR: 
     if(strlen(path) + 1 + DIRSIZ + 1 > sizeof buf){
       printf("ls: path too long\n");
       break;
     }
     strcpy(buf, path);
+    // printf("buf: %s  strlen(buf): %d\n", buf, strlen(buf)); ///////////////
     p = buf+strlen(buf);
-    *p++ = '/';
+    // printf("path: %s  p: %s\n", path, p); ////////////////////
+    *p++ = '/'; ///// 注意：++后缀执行完才进行++！！所以p其实存的是buf结尾位置的地址
+    // printf("buff: %s\n", buf);///////////////////
     while(read(fd, &de, sizeof(de)) == sizeof(de)){
+
+      ////////// de.inum == 0 说明文件不存在
       if(de.inum == 0)
         continue;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
+      // printf("p: %s\n", p);/////////////////////////////
       if(stat(buf, &st) < 0){
         printf("ls: cannot stat %s\n", buf);
         continue;

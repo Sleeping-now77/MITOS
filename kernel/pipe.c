@@ -25,7 +25,7 @@ pipealloc(struct file **f0, struct file **f1)
   struct pipe *pi;
 
   pi = 0;
-  *f0 = *f1 = 0;
+  *f0 = *f1 = 0;  // 将读写文件描述符（指向read端和write端file的指针）设为空指针，通过filealloc()产生
   if((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
     goto bad;
   if((pi = (struct pipe*)kalloc()) == 0)
