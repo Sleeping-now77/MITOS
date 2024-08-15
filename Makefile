@@ -188,8 +188,11 @@ UPROGS=\
 	$U/_grind\
 	$U/_wc\
 	$U/_zombie\
-	$U/_trace\
+<<<<<<< Updated upstream
 
+=======
+	$U/_trace\
+>>>>>>> Stashed changes
 
 
 
