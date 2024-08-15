@@ -91,3 +91,20 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+////////////////////////////
+// The functions to retrieve system call arguments from user space are in kernel/syscall.c, and you can see examples of their use in kernel/sysproc.c.
+uint64
+sys_trace(void)
+{
+  // printf("sys_trace!!\n");
+  //TODO
+  int mask_num;
+  struct proc *p = myproc();
+
+  argint(0, &mask_num);
+  p->mask = mask_num;
+  // printf("mask: %d\n", mask_num);
+  
+  return 0;
+}

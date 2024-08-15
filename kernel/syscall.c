@@ -79,6 +79,21 @@ argstr(int n, char *buf, int max)
   return fetchstr(addr, buf, max);
 }
 
+char *sysname[23] = { "null",
+  "fork", "exit", "wait", "pipe",
+  "read", "kill", "exec", "fstat",
+  "chdir","dup",  "getpid","sbrk",
+  "sleep","uptime","open", "write",
+  "mknod", "unlink", "link","mkdir",
+  "close", "trace"
+};
+
+// // Judge the current whether the syscall is to trace or not
+// int
+// sysnum(int mask) {
+  
+// }
+
 // Prototypes for the functions that handle system calls.
 extern uint64 sys_fork(void);
 extern uint64 sys_exit(void);
@@ -101,6 +116,7 @@ extern uint64 sys_unlink(void);
 extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
+extern uint64 sys_trace(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -126,6 +142,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_trace]   sys_trace,
 };
 
 void
@@ -139,6 +156,22 @@ syscall(void)
     // Use num to lookup the system call function for num, call it,
     // and store its return value in p->trapframe->a0
     p->trapframe->a0 = syscalls[num]();
+
+    ////////// for syscall trace()
+    // print the trace output. You will need to add an array of syscall names to index into.
+    int mask = p->mask;
+    if(mask >= (1<<num)) {
+      for(int i = 22; i > num; i--) {
+        int offset = 1 << i;
+        if(mask >= offset) {
+          mask -= offset;
+        }
+      }
+      if(mask >= (1<<num)) {
+        printf("%d: syscall %s -> %d\n", p->pid, sysname[num], p->trapframe->a0);
+      }
+    }
+
   } else {
     printf("%d %s: unknown sys call %d\n",
             p->pid, p->name, num);
