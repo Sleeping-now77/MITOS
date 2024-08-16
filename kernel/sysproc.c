@@ -6,6 +6,8 @@
 #include "spinlock.h"
 #include "proc.h"
 
+#include "sysinfo.h"
+
 uint64
 sys_exit(void)
 {
@@ -106,5 +108,25 @@ sys_trace(void)
   p->mask = mask_num;
   // printf("mask: %d\n", mask_num);
   
+  return 0;
+}
+
+uint64
+sys_sysinfo(void) {
+  struct sysinfo sysi;
+  struct proc *p = myproc();
+  uint64 si;  // user pointer to struct sysinfo
+ 
+  argaddr(0, &si);
+  /// 需要搞一个内核的 sysinfo : sysi
+  /// 通过那两个函数赋值
+  /// 然后用copyout传出去
+  sysi.nproc = proccount();
+  sysi.freemem = freemem();
+  // printf("%d %d\n", sysi.nproc, sysi.freemem);
+  if(copyout(p->pagetable, si, (char *)&sysi, sizeof(sysi)) < 0) {
+    return -1;
+  }
+
   return 0;
 }

@@ -117,6 +117,7 @@ extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_trace(void);
+extern uint64 sys_sysinfo(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -143,6 +144,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_trace]   sys_trace,
+[SYS_sysinfo] sys_sysinfo,
 };
 
 void
@@ -159,6 +161,7 @@ syscall(void)
 
     ////////// for syscall trace()
     // print the trace output. You will need to add an array of syscall names to index into.
+    ////// 更好的判断方式： (p->mask >> num) & 1
     int mask = p->mask;
     if(mask >= (1<<num)) {
       for(int i = 22; i > num; i--) {
